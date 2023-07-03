@@ -29,6 +29,7 @@ sh "mvn sonar:sonar"
 }
 
 //UploadArtifacts Into Nexus
+/*
 stage('UploadArtifactsIntoNexus'){
 steps{
 sh "mvn clean deploy"
@@ -43,6 +44,6 @@ sshagent(['4031d33a-6832-4dc8-8798-bb3e54c46656']) {
 }
 }
 }
-
+*/
 }//stages closing
 }//pipeline closing
