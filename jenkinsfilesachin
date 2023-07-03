@@ -1,0 +1,48 @@
+pipeline{
+
+agent any
+
+tools{
+maven 'maven3.8.7'
+}
+
+stages{
+//checkout code stage
+stage('checkoutcode'){
+steps{
+git branch: 'development', credentialsId: 'fb616d9f-413c-450d-9109-d87ac8cde32f', url: 'https://github.com/sachinkanive/maven-web-application.git'
+}
+}
+
+//Build stage
+stage('Build'){
+steps{
+sh "mvn clean package"
+}
+}
+
+//Execute sonarQube Report
+stage('ExecutionSonarQubeReport'){
+steps{
+sh "mvn sonar:sonar"
+}
+}
+
+//UploadArtifacts Into Nexus
+stage('UploadArtifactsIntoNexus'){
+steps{
+sh "mvn clean deploy"
+}
+}
+
+//Deploy Apllication Into Tomcat server
+stage('DeployAppIntoTomcat'){
+steps{ 
+sshagent(['4031d33a-6832-4dc8-8798-bb3e54c46656']) {
+ sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@172.31.43.101:/opt/apache-tomcat-9.0.74/webapps/"
+}
+}
+}
+
+}//stages closing
+}//pipeline closing
